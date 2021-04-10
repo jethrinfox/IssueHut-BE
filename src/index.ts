@@ -15,16 +15,16 @@ import { PingResolver } from "./resolvers/ping"
 import { UserResolver } from "./resolvers/user"
 
 const main = async () => {
-  const conn = await createConnection({
+  await createConnection({
     type: "postgres",
-    url: process.env.DATABASE_URL,
-    synchronize: __prod__,
-    logging: true,
+    username: process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
+    synchronize: !__prod__,
+    logging: !__prod__,
     entities: [User],
     migrations: [path.join(__dirname, "./migrations/*")],
   })
-
-  await conn.runMigrations()
 
   const RedisStore = connectRedis(session)
   const redis = new Redis(process.env.REDIS_URL)

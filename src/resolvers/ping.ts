@@ -1,9 +1,9 @@
-import { Query, Resolver } from "type-graphql";
+import { Query, Resolver } from "type-graphql"
 
 @Resolver()
 export class PingResolver {
-	@Query(() => String)
-	ping() {
-		return "pong!";
-	}
+  @Query(() => String)
+  ping() {
+    return "pong!"
+  }
 }
