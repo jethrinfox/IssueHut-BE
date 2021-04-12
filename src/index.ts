@@ -10,6 +10,9 @@ import path from "path"
 import { buildSchema } from "type-graphql"
 import { createConnection } from "typeorm"
 import { COOKIE_NAME, PORT, __prod__ } from "./config"
+import { Comment } from "./entities/Comment"
+import { Issue } from "./entities/Issue"
+import { Project } from "./entities/Project"
 import { User } from "./entities/User"
 import { PingResolver } from "./resolvers/ping"
 import { UserResolver } from "./resolvers/user"
@@ -21,7 +24,7 @@ import { UserResolver } from "./resolvers/user"
     database: process.env.DATABASE_NAME,
     synchronize: !__prod__,
     logging: !__prod__,
-    entities: [User],
+    entities: [User, Project, Issue, Comment],
     migrations: [path.join(__dirname, "./migrations/*")],
   })
 
