@@ -1,20 +1,19 @@
 import { ApolloServer } from "apollo-server-express"
-import connectRedis from "connect-redis"
-import cors from "cors"
+import "reflect-metadata"
 import "dotenv-safe/config"
 import express from "express"
+import connectRedis from "connect-redis"
+import cors from "cors"
 import session from "express-session"
 import Redis from "ioredis"
 import path from "path"
-import "reflect-metadata"
 import { buildSchema } from "type-graphql"
 import { createConnection } from "typeorm"
 import { COOKIE_NAME, PORT, __prod__ } from "./config"
 import { User } from "./entities/User"
 import { PingResolver } from "./resolvers/ping"
 import { UserResolver } from "./resolvers/user"
-
-const main = async () => {
+;(async () => {
   await createConnection({
     type: "postgres",
     username: process.env.DATABASE_USERNAME,
@@ -61,7 +60,6 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [PingResolver, UserResolver],
-      validate: false,
     }),
     context: ({ req, res }) => ({
       req,
@@ -77,6 +75,4 @@ const main = async () => {
   app.listen(PORT, () =>
     console.log(`Server running on http://localhost:${PORT}`),
   )
-}
-
-main()
+})()
