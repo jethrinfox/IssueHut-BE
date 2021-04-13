@@ -17,6 +17,7 @@ import { User } from "./entities/User"
 import { PingResolver } from "./resolvers/ping"
 import { UserResolver } from "./resolvers/user"
 import { ProjectResolver } from "./resolvers/project"
+import { IssueResolver } from "./resolvers/issue"
 ;(async () => {
   await createConnection({
     type: "postgres",
@@ -63,7 +64,7 @@ import { ProjectResolver } from "./resolvers/project"
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [PingResolver, UserResolver, ProjectResolver],
+      resolvers: [PingResolver, UserResolver, ProjectResolver, IssueResolver],
     }),
     context: ({ req, res }) => ({
       req,
