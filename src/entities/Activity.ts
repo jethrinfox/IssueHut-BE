@@ -6,14 +6,12 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from "typeorm"
-import { Issue } from "./Issue"
-import { User } from "./User"
+import { Project } from "./Project"
 
 @ObjectType()
-@Entity("comments")
-export class Comment extends BaseEntity {
+@Entity("activities")
+export class Activity extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number
@@ -22,17 +20,14 @@ export class Comment extends BaseEntity {
   @Column()
   text!: string
 
-  @ManyToOne(() => Issue, (issue) => issue.id)
-  issue!: Issue
+  @ManyToOne(() => Project, (project) => project.id)
+  project!: Project
 
-  @ManyToOne(() => User, (user) => user.id)
-  user!: User
+  // @Field()
+  // @Column()
+  // order: string
 
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date
-
-  @Field(() => String)
-  @UpdateDateColumn()
-  updatedAt: Date
 }

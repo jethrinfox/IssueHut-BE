@@ -8,12 +8,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
-import { List } from "./List"
-import { User } from "./User"
+import { Project } from "./Project"
 
 @ObjectType()
-@Entity("issues")
-export class Issue extends BaseEntity {
+@Entity("lists")
+export class List extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number
@@ -22,22 +21,12 @@ export class Issue extends BaseEntity {
   @Column()
   name!: string
 
-  @Field()
-  @Column()
-  description: string
+  @ManyToOne(() => Project, (project) => project.id)
+  project!: Project
 
-  @ManyToOne(() => User, (user) => user.id)
-  reporter!: User
-
-  @ManyToOne(() => User, (user) => user.id)
-  assignee: User
-
-  @ManyToOne(() => List, (list) => list.id)
-  list!: List
-
-  @Field()
-  @Column({ default: false })
-  priority!: boolean
+  // @Field()
+  // @Column()
+  // order: string
 
   @Field()
   @Column({ default: false })
