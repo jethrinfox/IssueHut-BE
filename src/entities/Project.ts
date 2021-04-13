@@ -23,10 +23,13 @@ export class Project extends BaseEntity {
 
   @Field()
   @Column()
-  description!: string
+  description: string
 
   @ManyToOne(() => User, (user) => user.id)
-  creator!: User
+  owner!: User
+
+  @ManyToOne(() => User, (user) => user.id)
+  members: User
 
   @Field(() => String)
   @CreateDateColumn()

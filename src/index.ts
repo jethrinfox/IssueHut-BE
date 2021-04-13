@@ -18,6 +18,8 @@ import { PingResolver } from "./resolvers/ping"
 import { UserResolver } from "./resolvers/user"
 import { ProjectResolver } from "./resolvers/project"
 import { IssueResolver } from "./resolvers/issue"
+import { List } from "./entities/List"
+import { Activity } from "./entities/Activity"
 ;(async () => {
   await createConnection({
     type: "postgres",
@@ -26,7 +28,7 @@ import { IssueResolver } from "./resolvers/issue"
     database: process.env.DATABASE_NAME,
     synchronize: !__prod__,
     logging: !__prod__,
-    entities: [User, Project, Issue, Comment],
+    entities: [User, Project, List, Issue, Comment, Activity],
     migrations: [path.join(__dirname, "./migrations/*")],
   })
 
