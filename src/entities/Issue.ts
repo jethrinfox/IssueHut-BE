@@ -4,9 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
@@ -28,16 +26,14 @@ export class Issue extends BaseEntity {
   @Column()
   description!: string
 
-  @OneToOne(() => User)
-  @JoinColumn()
-  reporterId: User
+  @ManyToOne(() => User, (user) => user.id)
+  reporter: User
 
-  @OneToOne(() => User)
-  @JoinColumn()
-  assigneeId: User
+  @ManyToOne(() => User, (user) => user.id)
+  assignee: User
 
   @ManyToOne(() => Project, (project) => project.id)
-  projectId!: Project
+  project!: Project
 
   @Field(() => String)
   @CreateDateColumn()
