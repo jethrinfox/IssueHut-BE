@@ -14,14 +14,14 @@ import { Project } from "./Project"
 export class Activity extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
-  id!: number
+  id: number
 
   @Field()
   @Column()
-  text!: string
+  text: string
 
-  @ManyToOne(() => Project, (project) => project.id)
-  project!: Project
+  @ManyToOne(() => Project, (project) => project.activities)
+  project: Project
 
   // @Field()
   // @Column()

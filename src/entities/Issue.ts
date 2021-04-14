@@ -1,53 +1,44 @@
-import { Field, ObjectType } from "type-graphql"
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm"
-import { List } from "./List"
-import { User } from "./User"
+import { Field, ObjectType } from "type-graphql";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Comment } from "./Comment";
+import { List } from "./List";
+import Model from "./Model";
+import { User } from "./User";
+
+enum IssuePriority {
+  HIGH = "high",
+  MEDIUM = "medium",
+  LOW = "low",
+}
 
 @ObjectType()
 @Entity("issues")
-export class Issue extends BaseEntity {
+export class Issue extends Model {
   @Field()
-  @PrimaryGeneratedColumn()
-  id!: number
+  @Column()
+  name: string;
 
   @Field()
   @Column()
-  name!: string
+  description: string;
 
   @Field()
-  @Column()
-  description: string
+  @Column({ type: "enum", enum: IssuePriority, default: IssuePriority.MEDIUM })
+  priority: IssuePriority;
 
-  @ManyToOne(() => User, (user) => user.id)
-  reporter!: User
+  @Field()
+  @Column({ default: false })
+  archived: boolean;
 
-  @ManyToOne(() => User, (user) => user.id)
-  assignee: User
+  @ManyToOne(() => User, (user) => user.issuesReported)
+  reporter: User;
+
+  @ManyToOne(() => User, (user) => user.issuesAssigned)
+  assignee: User;
 
   @ManyToOne(() => List, (list) => list.id)
-  list!: List
+  list: List;
 
-  @Field()
-  @Column({ default: false })
-  priority!: boolean
-
-  @Field()
-  @Column({ default: false })
-  archived!: boolean
-
-  @Field(() => String)
-  @CreateDateColumn()
-  createdAt: Date
-
-  @Field(() => String)
-  @UpdateDateColumn()
-  updatedAt: Date
+  @OneToMany(() => Comment, (comment) => comment.issue)
+  comments: Comment[];
 }

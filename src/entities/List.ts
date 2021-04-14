@@ -1,42 +1,23 @@
-import { Field, ObjectType } from "type-graphql"
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm"
-import { Project } from "./Project"
+import { Field, ObjectType } from "type-graphql";
+import { Column, Entity, ManyToOne } from "typeorm";
+import Model from "./Model";
+import { Project } from "./Project";
 
 @ObjectType()
 @Entity("lists")
-export class List extends BaseEntity {
-  @Field()
-  @PrimaryGeneratedColumn()
-  id!: number
-
+export class List extends Model {
   @Field()
   @Column()
-  name!: string
-
-  @ManyToOne(() => Project, (project) => project.id)
-  project!: Project
+  name: string;
 
   // @Field()
   // @Column()
   // order: string
 
+  @ManyToOne(() => Project, (project) => project.lists)
+  project: Project;
+
   @Field()
   @Column({ default: false })
-  archived!: boolean
-
-  @Field(() => String)
-  @CreateDateColumn()
-  createdAt: Date
-
-  @Field(() => String)
-  @UpdateDateColumn()
-  updatedAt: Date
+  archived: boolean;
 }
