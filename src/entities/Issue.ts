@@ -5,7 +5,7 @@ import { List } from "./List";
 import Model from "./Model";
 import { User } from "./User";
 
-enum IssuePriority {
+export enum IssuePriority {
   HIGH = "high",
   MEDIUM = "medium",
   LOW = "low",
@@ -19,8 +19,8 @@ export class Issue extends Model {
   name: string;
 
   @Field()
-  @Column()
-  description: string;
+  @Column({ nullable: true })
+  description?: string;
 
   @Field()
   @Column({ type: "enum", enum: IssuePriority, default: IssuePriority.MEDIUM })
@@ -30,14 +30,14 @@ export class Issue extends Model {
   @Column({ default: false })
   archived: boolean;
 
+  @ManyToOne(() => List, (list) => list.id, { nullable: false })
+  list: List;
+
   @ManyToOne(() => User, (user) => user.issuesReported)
   reporter: User;
 
   @ManyToOne(() => User, (user) => user.issuesAssigned)
   assignee: User;
-
-  @ManyToOne(() => List, (list) => list.id)
-  list: List;
 
   @OneToMany(() => Comment, (comment) => comment.issue)
   comments: Comment[];
