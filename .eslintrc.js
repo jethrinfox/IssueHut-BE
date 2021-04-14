@@ -5,7 +5,6 @@ module.exports = {
     jest: true,
   },
   extends: [
-    "standard",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
@@ -17,7 +16,6 @@ module.exports = {
   },
   plugins: ["@typescript-eslint", "prettier"],
   rules: {
-    "prettier/prettier": "error",
     "@typescript-eslint/explicit-module-boundary-types": "off",
   },
-}
+};
