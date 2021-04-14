@@ -14,10 +14,10 @@ export class List extends Model {
   // @Column()
   // order: string
 
-  @ManyToOne(() => Project, (project) => project.lists)
-  project: Project;
-
   @Field()
   @Column({ default: false })
   archived: boolean;
+
+  @ManyToOne(() => Project, (project) => project.lists)
+  project: Project;
 }

@@ -21,6 +21,7 @@ import { ProjectResolver } from "./resolvers/project";
 import { IssueResolver } from "./resolvers/issue";
 import { List } from "./entities/List";
 import { Activity } from "./entities/Activity";
+import { ListResolver } from "./resolvers/list";
 
 (async () => {
   await createConnection({
@@ -68,7 +69,13 @@ import { Activity } from "./entities/Activity";
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [PingResolver, UserResolver, ProjectResolver, IssueResolver],
+      resolvers: [
+        PingResolver,
+        UserResolver,
+        ProjectResolver,
+        ListResolver,
+        IssueResolver,
+      ],
     }),
     context: ({ req, res }) => ({
       req,

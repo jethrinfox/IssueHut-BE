@@ -62,8 +62,8 @@ export class ProjectResolver {
       project.name = name || project.name;
       project.description = description || project.description;
       await project.save();
-    } catch (err) {
-      console.log("error: ", err);
+    } catch (error) {
+      console.log("error: ", error);
       return;
     }
 
