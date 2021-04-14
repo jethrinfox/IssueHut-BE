@@ -1,26 +1,28 @@
-import { ApolloServer } from "apollo-server-express"
-import "reflect-metadata"
-import "dotenv-safe/config"
-import express from "express"
-import connectRedis from "connect-redis"
-import cors from "cors"
-import session from "express-session"
-import Redis from "ioredis"
-import path from "path"
-import { buildSchema } from "type-graphql"
-import { createConnection } from "typeorm"
-import { COOKIE_NAME, PORT, __prod__ } from "./config"
-import { Comment } from "./entities/Comment"
-import { Issue } from "./entities/Issue"
-import { Project } from "./entities/Project"
-import { User } from "./entities/User"
-import { PingResolver } from "./resolvers/ping"
-import { UserResolver } from "./resolvers/user"
-import { ProjectResolver } from "./resolvers/project"
-import { IssueResolver } from "./resolvers/issue"
-import { List } from "./entities/List"
-import { Activity } from "./entities/Activity"
-;(async () => {
+import "reflect-metadata";
+import "dotenv-safe/config";
+
+import { ApolloServer } from "apollo-server-express";
+import express from "express";
+import connectRedis from "connect-redis";
+import cors from "cors";
+import session from "express-session";
+import Redis from "ioredis";
+import path from "path";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import { COOKIE_NAME, PORT, __prod__ } from "./config";
+import { Comment } from "./entities/Comment";
+import { Issue } from "./entities/Issue";
+import { Project } from "./entities/Project";
+import { User } from "./entities/User";
+import { PingResolver } from "./resolvers/ping";
+import { UserResolver } from "./resolvers/user";
+import { ProjectResolver } from "./resolvers/project";
+import { IssueResolver } from "./resolvers/issue";
+import { List } from "./entities/List";
+import { Activity } from "./entities/Activity";
+
+(async () => {
   await createConnection({
     type: "postgres",
     username: process.env.DATABASE_USERNAME,
@@ -30,20 +32,20 @@ import { Activity } from "./entities/Activity"
     logging: !__prod__,
     entities: [User, Project, List, Issue, Comment, Activity],
     migrations: [path.join(__dirname, "./migrations/*")],
-  })
+  });
 
-  const RedisStore = connectRedis(session)
-  const redis = new Redis(process.env.REDIS_URL)
+  const RedisStore = connectRedis(session);
+  const redis = new Redis(process.env.REDIS_URL);
 
-  const app = express()
+  const app = express();
 
-  app.set("trust proxy", 1)
+  app.set("trust proxy", 1);
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
       credentials: true,
-    }),
-  )
+    })
+  );
   app.use(
     session({
       name: COOKIE_NAME,
@@ -61,8 +63,8 @@ import { Activity } from "./entities/Activity"
         sameSite: "lax",
         domain: __prod__ ? ".jethrinfox.ddns.net" : undefined,
       },
-    }),
-  )
+    })
+  );
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -73,13 +75,13 @@ import { Activity } from "./entities/Activity"
       res,
       redis,
     }),
-  })
+  });
 
-  apolloServer.applyMiddleware({ app, cors: false })
+  apolloServer.applyMiddleware({ app, cors: false });
 
-  app.get("/", (_, res) => res.redirect("/graphql"))
+  app.get("/", (_, res) => res.redirect("/graphql"));
 
   app.listen(PORT, () =>
-    console.log(`Server running on http://localhost:${PORT}`),
-  )
-})()
+    console.log(`Server running on http://localhost:${PORT}`)
+  );
+})();

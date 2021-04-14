@@ -1,41 +1,36 @@
-import { Field, ObjectType } from "type-graphql"
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm"
-import { User } from "./User"
+import { Field, ObjectType } from "type-graphql";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Activity } from "./Activity";
+import { List } from "./List";
+import Model from "./Model";
+import { User } from "./User";
 
 @ObjectType()
 @Entity("projects")
-export class Project extends BaseEntity {
+export class Project extends Model {
   @Field()
-  @PrimaryGeneratedColumn()
-  id!: number
+  @Column()
+  name: string;
 
   @Field()
   @Column()
-  name!: string
+  description?: string;
 
   @Field()
   @Column()
-  description: string
+  ownerId: number;
 
-  @ManyToOne(() => User, (user) => user.id)
-  owner!: User
+  @Field()
+  @ManyToOne(() => User, (user) => user.projects, { nullable: false })
+  owner: User;
 
-  @ManyToOne(() => User, (user) => user.id)
-  members: User
+  // @Field()
+  // @ManyToOne(() => User, (user) => user.member)
+  // members?: User;
 
-  @Field(() => String)
-  @CreateDateColumn()
-  createdAt: Date
+  @OneToMany(() => List, (list) => list.project)
+  lists: List[];
 
-  @Field(() => String)
-  @UpdateDateColumn()
-  updatedAt: Date
+  @OneToMany(() => Activity, (activity) => activity.project)
+  activities: Activity[];
 }
