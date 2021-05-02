@@ -11,9 +11,9 @@ export class Comment extends Model {
   @Column()
   text: string;
 
-  @ManyToOne(() => Issue, (issue) => issue.comments)
+  @ManyToOne(() => Issue, { onDelete: "CASCADE" })
   issue: Issue;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User)
   creator: User;
 }

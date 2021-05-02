@@ -1,9 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
-import { Column, Entity, OneToMany } from "typeorm";
-import { Comment } from "./Comment";
-import { Issue } from "./Issue";
+import { Column, Entity } from "typeorm";
 import Model from "./Model";
-import { Project } from "./Project";
 
 @ObjectType()
 @Entity("users")
@@ -23,18 +20,19 @@ export class User extends Model {
   @Column()
   password: string;
 
-  @OneToMany(() => Project, (project) => project.owner)
-  projects: Project[];
+  // @Field(() => [Project], { nullable: true })
+  // @ManyToMany(() => Project)
+  // member?: Project[];
 
-  // @OneToMany(() => Project, (project) => project.members)
-  // member: Project[];
+  // @OneToMany(() => Project, (project) => project.owner)
+  // projects: Project[];
 
-  @OneToMany(() => Issue, (issue) => issue.reporter)
-  issuesReported: Issue[];
+  // @OneToMany(() => Issue, (issue) => issue.reporter)
+  // issuesReported: Issue[];
 
-  @OneToMany(() => Issue, (issue) => issue.assignee)
-  issuesAssigned: Issue[];
+  // @OneToMany(() => Issue, (issue) => issue.assignee)
+  // issuesAssigned: Issue[];
 
-  @OneToMany(() => Comment, (comment) => comment.creator)
-  comments: Comment[];
+  // @OneToMany(() => Comment, (comment) => comment.creator)
+  // comments: Comment[];
 }

@@ -25,17 +25,24 @@ class ProjectInput {
 @Resolver(Project)
 export class ProjectResolver {
   @Query(() => [Project])
-  async projects(): Promise<Project[]> {
-    const projects = await Project.find();
+  async projects(@Ctx() { req }: MyContext): Promise<Project[]> {
+    const userId = req.session.userId;
+
+    const projects = await Project.find({
+      where: [{ ownerId: userId }],
+    });
 
     return projects;
   }
 
   @Query(() => Project, { nullable: true })
   async project(
-    @Arg("id", () => Int) id: number
+    @Arg("id", () => Int) id: number,
+    @Ctx() { req }: MyContext
   ): Promise<Project | undefined> {
-    return await Project.findOne(id);
+    const userId = req.session.userId;
+
+    return await Project.findOne({ where: [{ id }, { ownerId: userId }] });
   }
 
   @Mutation(() => Project)

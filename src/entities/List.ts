@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Issue } from "./Issue";
 import Model from "./Model";
 import { Project } from "./Project";
 
@@ -10,14 +11,18 @@ export class List extends Model {
   @Column()
   name: string;
 
-  // @Field()
-  // @Column()
-  // order: string
+  @Field()
+  @Column({ type: "int", nullable: true })
+  order: number;
 
   @Field()
   @Column({ default: false })
   archived: boolean;
 
-  @ManyToOne(() => Project, (project) => project.lists)
+  @Field(() => [Issue])
+  @OneToMany(() => Issue, (issue) => issue.list)
+  issues: Issue[];
+
+  @ManyToOne(() => Project, (project) => project.lists, { onDelete: "CASCADE" })
   project: Project;
 }
