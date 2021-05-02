@@ -21,12 +21,13 @@ export class Project extends Model {
   ownerId: number;
 
   @Field()
-  @ManyToOne(() => User, (user) => user.projects, { nullable: false })
+  @ManyToOne(() => User, { nullable: false, onDelete: "CASCADE" })
   owner: User;
 
-  // @Field()
-  // @ManyToOne(() => User, (user) => user.member)
-  // members?: User;
+  // @Field(() => [User], { nullable: true })
+  // @ManyToMany(() => User)
+  // @JoinTable()
+  // members: User[];
 
   @OneToMany(() => List, (list) => list.project)
   lists: List[];

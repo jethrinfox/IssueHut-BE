@@ -30,15 +30,29 @@ export class Issue extends Model {
   @Column({ default: false })
   archived: boolean;
 
-  @ManyToOne(() => List, (list) => list.id, { nullable: false })
+  @Field()
+  @Column({ type: "int", nullable: true })
+  order: number;
+
+  @Field()
+  @Column()
+  listId: number;
+
+  @ManyToOne(() => List, (list) => list.id, {
+    nullable: false,
+    onDelete: "CASCADE",
+  })
   list: List;
 
-  @ManyToOne(() => User, (user) => user.issuesReported)
+  @Field()
+  @Column()
+  reporterId: number;
+
+  @Field()
+  @ManyToOne(() => User)
   reporter: User;
 
-  @ManyToOne(() => User, (user) => user.issuesAssigned)
-  assignee: User;
-
+  @Field(() => [Comment], { nullable: true })
   @OneToMany(() => Comment, (comment) => comment.issue)
   comments: Comment[];
 }

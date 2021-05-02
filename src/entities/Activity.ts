@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql"
+import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -6,22 +6,24 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-} from "typeorm"
-import { Project } from "./Project"
+} from "typeorm";
+import { Project } from "./Project";
 
 @ObjectType()
 @Entity("activities")
 export class Activity extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Field()
   @Column()
-  text: string
+  text: string;
 
-  @ManyToOne(() => Project, (project) => project.activities)
-  project: Project
+  @ManyToOne(() => Project, (project) => project.activities, {
+    onDelete: "CASCADE",
+  })
+  project: Project;
 
   // @Field()
   // @Column()
@@ -29,5 +31,5 @@ export class Activity extends BaseEntity {
 
   @Field(() => String)
   @CreateDateColumn()
-  createdAt: Date
+  createdAt: Date;
 }
