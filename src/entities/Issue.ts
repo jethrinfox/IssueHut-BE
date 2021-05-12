@@ -18,7 +18,7 @@ export class Issue extends Model {
   @Column()
   name: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
   description?: string;
 
@@ -31,7 +31,7 @@ export class Issue extends Model {
   archived: boolean;
 
   @Field()
-  @Column({ type: "int", nullable: true })
+  @Column({ type: "int" })
   order: number;
 
   @Field()

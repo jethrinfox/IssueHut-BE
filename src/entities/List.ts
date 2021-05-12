@@ -12,7 +12,7 @@ export class List extends Model {
   name: string;
 
   @Field()
-  @Column({ type: "int", nullable: true })
+  @Column({ type: "int" })
   order: number;
 
   @Field()
@@ -23,6 +23,9 @@ export class List extends Model {
   @OneToMany(() => Issue, (issue) => issue.list)
   issues: Issue[];
 
+  @Field()
+  @Column()
+  projectId: number;
   @ManyToOne(() => Project, (project) => project.lists, { onDelete: "CASCADE" })
   project: Project;
 }

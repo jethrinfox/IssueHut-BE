@@ -69,14 +69,25 @@ export class IssueResolver {
   @UseMiddleware(isAuth)
   async createIssue(
     @Arg("listId", () => Int) listId: number,
-    @Arg("options") options: IssueInput
+    @Arg("options") options: IssueInput,
+    @Ctx() { req }: MyContext
   ): Promise<Issue | undefined> {
+    const userId = req.session.userId;
+
     let list;
 
     try {
-      list = await List.findOneOrFail(listId);
+      list = await List.findOneOrFail({
+        where: { id: listId },
+        relations: ["issues"],
+      });
 
-      return Issue.create({ ...options, list }).save();
+      return Issue.create({
+        ...options,
+        list,
+        reporterId: userId,
+        order: list.issues.length + 1,
+      }).save();
     } catch (error) {
       console.log("error: ", error);
       return;
@@ -106,7 +117,43 @@ export class IssueResolver {
   async deleteIssue(
     @Arg("issueId", () => Int) issueId: number
   ): Promise<boolean> {
-    return Boolean((await Issue.delete(issueId)).affected);
+    let list;
+    try {
+      const issue = await Issue.findOneOrFail(issueId);
+
+      list = await List.findOneOrFail({
+        where: { id: issue.listId },
+        relations: ["issues"],
+      });
+
+      const reorderedIssuesList = list.issues.map((_issue) => {
+        if (_issue.id === issueId) {
+          return _issue;
+        } else if (_issue.order > issue.order) {
+          _issue.order = _issue.order - 1;
+          return _issue;
+        } else {
+          return _issue;
+        }
+      });
+
+      const issuesUpdate = Issue.save([...reorderedIssuesList]);
+
+      if (!issuesUpdate) throw new Error("Issues has not been updated");
+
+      const hasDeleted = Boolean((await Issue.delete(issueId)).affected);
+      if (!hasDeleted) throw new Error("Issue has not been deleted");
+      return true;
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+
+      if (list) {
+        await List.save(list);
+      }
+      return false;
+    }
+
+    // return Boolean((await Issue.delete(issueId)).affected);
   }
 
   @Mutation(() => Boolean)
@@ -124,7 +171,7 @@ export class IssueResolver {
         where: { id: issue.listId },
       });
       await Project.findOneOrFail({
-        where: [{ id: list.project }, { ownerId: userId }],
+        where: { id: list.projectId, ownerId: userId },
       });
       const issues = await Issue.find({
         where: { listId: list.id },

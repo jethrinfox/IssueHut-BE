@@ -8,6 +8,7 @@ export function updateOrder<T extends Item>(
   newOrder: Item
 ): T[] | null {
   const prevItemOrder = items.find((item) => item.id === newOrder.id)?.order;
+
   const newItemOrder = newOrder.order;
   const itemId = newOrder.id;
 

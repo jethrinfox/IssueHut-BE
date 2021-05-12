@@ -9,6 +9,7 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
+import { List } from "../entities/List";
 import { Project } from "../entities/Project";
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
@@ -41,8 +42,11 @@ export class ProjectResolver {
     @Ctx() { req }: MyContext
   ): Promise<Project | undefined> {
     const userId = req.session.userId;
+    const project = await Project.findOne({
+      where: [{ id }, { ownerId: userId }],
+    });
 
-    return await Project.findOne({ where: [{ id }, { ownerId: userId }] });
+    return project;
   }
 
   @Mutation(() => Project)
@@ -50,11 +54,23 @@ export class ProjectResolver {
   async createProject(
     @Arg("options") options: ProjectInput,
     @Ctx() { req }: MyContext
-  ): Promise<Project | undefined> {
-    return Project.create({
+  ): Promise<Project> {
+    const userId = req.session.userId;
+
+    const project = await Project.create({
       ...options,
-      ownerId: req.session.userId,
+      ownerId: userId,
     }).save();
+
+    const newProjectLists = ["To Do", "In Progress", "Done"].map(
+      (name, index) => {
+        return List.create({ name, order: index + 1, projectId: project.id });
+      }
+    );
+
+    await List.save(newProjectLists);
+
+    return project;
   }
 
   @Mutation(() => Project)

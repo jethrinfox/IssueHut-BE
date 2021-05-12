@@ -35,16 +35,19 @@ export class ListResolver {
     const userId = req.session.userId;
 
     try {
-      Project.findOneOrFail({
+      await Project.findOneOrFail({
         where: { id: projectId, ownerId: userId },
       });
 
-      return List.find({
-        where: { project: projectId },
+      const lists = await List.find({
+        where: { projectId: projectId },
         relations: ["issues"],
         order: { order: "ASC" },
       });
+
+      return lists;
     } catch (error) {
+      console.log("error: ", error);
       return [];
     }
   }
@@ -63,10 +66,8 @@ export class ListResolver {
     @Arg("projectId", () => Int) projectId: number,
     @Arg("name") name: string
   ): Promise<List | undefined> {
-    let project;
-
     try {
-      project = await Project.findOneOrFail(projectId);
+      const project = await Project.findOneOrFail(projectId);
 
       return List.create({ name, project }).save();
     } catch (error) {
@@ -114,19 +115,27 @@ export class ListResolver {
 
     try {
       const list = await List.findOneOrFail(id);
+      console.log("🚀 ~ list", list);
+      if (!list) throw new Error("obtaining the list with the provided id");
+
       const project = await Project.findOneOrFail({
-        where: [{ id: list.project }, { ownerId: userId }],
+        where: { id: list.projectId, ownerId: userId },
       });
+      console.log("🚀 ~ project", project);
+      if (!project)
+        throw new Error("checking if user has permissions on the project");
+
       const lists = await List.find({
-        where: { project: project.id },
+        where: { projectId: project.id },
       });
+      if (!lists || lists.length === 0)
+        throw new Error("getting all the lists of the project");
 
       const newListsOrder = updateOrder(lists, {
         id,
         order,
       });
-
-      if (!newListsOrder) throw new Error("New order validation error");
+      if (!newListsOrder) throw new Error("when reordering the lists");
 
       await List.save(newListsOrder);
 

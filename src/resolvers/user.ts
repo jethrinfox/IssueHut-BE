@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import { IsEmail, Length } from "class-validator";
-import { MyContext } from "src/types";
+import { MyContext } from "types";
 import {
   Arg,
   Ctx,
